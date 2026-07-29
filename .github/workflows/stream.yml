@@ -1,0 +1,79 @@
+name: GitHub Pages Stream Builder
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Depoyu Klonla
+        uses: actions/checkout@v4
+
+      - name: FFmpeg Kur
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Logoları Bas ve Yayın Akışını Düzenle
+        run: |
+          mkdir -p output
+
+          # 1. Normal videolar üzerine yayın logosu basılıyor
+          ffmpeg -y -i rj1.mp4 -i yayin_logo.png -filter_complex "[0:v][1:v]overlay=W-w-20:20" -c:a copy output/rj1.mp4
+          ffmpeg -y -i rj2.mp4 -i yayin_logo.png -filter_complex "[0:v][1:v]overlay=W-w-20:20" -c:a copy output/rj2.mp4
+          ffmpeg -y -i jenerik.mp4 -i yayin_logo.png -filter_complex "[0:v][1:v]overlay=W-w-20:20" -c:a copy output/jenerik.mp4
+          ffmpeg -y -i akilli.mp4 -i yayin_logo.png -filter_complex "[0:v][1:v]overlay=W-w-20:20" -c:a copy output/akilli.mp4
+
+          # KV Bölümleri üzerine yayın logosu basılıyor
+          ffmpeg -y -i kv1.mp4 -i yayin_logo.png -filter_complex "[0:v][1:v]overlay=W-w-20:20" -c:a copy output/kv1.mp4
+          ffmpeg -y -i kv2.mp4 -i yayin_logo.png -filter_complex "[0:v][1:v]overlay=W-w-20:20" -c:a copy output/kv2.mp4
+          ffmpeg -y -i kv3.mp4 -i yayin_logo.png -filter_complex "[0:v][1:v]overlay=W-w-20:20" -c:a copy output/kv3.mp4
+
+          # 2. Reklam videosu üzerine reklam logosu basılıyor
+          ffmpeg -y -i reklam.mp4 -i reklam_logo.png -filter_complex "[0:v][1:v]overlay=W-w-20:20" -c:a copy output/reklam.mp4
+
+          # 3. Yayın Akışı Sıralaması (RJ1 -> Reklam -> RJ2 -> Jenerik -> Akıllı -> KV)
+          # KV bölümleri sırayla (kv1, kv2, kv3) döngüye giriyor:
+          cat <<EOF > output/playlist.txt
+          file 'rj1.mp4'
+          file 'reklam.mp4'
+          file 'rj2.mp4'
+          file 'jenerik.mp4'
+          file 'akilli.mp4'
+          file 'kv1.mp4'
+          file 'rj1.mp4'
+          file 'reklam.mp4'
+          file 'rj2.mp4'
+          file 'jenerik.mp4'
+          file 'akilli.mp4'
+          file 'kv2.mp4'
+          file 'rj1.mp4'
+          file 'reklam.mp4'
+          file 'rj2.mp4'
+          file 'jenerik.mp4'
+          file 'akilli.mp4'
+          file 'kv3.mp4'
+          EOF
+
+          # 4. Kesintisiz HLS Stream (.m3u8) Dönüştürme
+          cd output
+          ffmpeg -y -f concat -safe 0 -i playlist.txt -c copy -bsf:v hls_mp4toannexb -f hls -hls_time 4 -hls_list_size 0 stream.m3u8
+
+      - name: GitHub Pages Ayarları
+        uses: actions/configure-pages@v4
+
+      - name: Artifact Yükle
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './output'
+
+      - name: GitHub Pages'e Yayınla (Deploy)
+        uses: actions/deploy-pages@v4
