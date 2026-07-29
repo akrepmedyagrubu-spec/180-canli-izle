@@ -1,0 +1,10 @@
+akilli.mp4 filter=lfs diff=lfs merge=lfs -text
+kv1.mp4 filter=lfs diff=lfs merge=lfs -text
+kv2.mp4 filter=lfs diff=lfs merge=lfs -text
+kv3.mp4 filter=lfs diff=lfs merge=lfs -text
+rj1.mp4 filter=lfs diff=lfs merge=lfs -text
+rj2.mp4 filter=lfs diff=lfs merge=lfs -text
+reklam.mp4 filter=lfs diff=lfs merge=lfs -text
+jenerik.mp4 filter=lfs diff=lfs merge=lfs -text
+yayin_logo.png filter=lfs diff=lfs merge=lfs -text
+reklam_logo.png filter=lfs diff=lfs merge=lfs -text
