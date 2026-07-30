@@ -11,12 +11,12 @@ do
   echo "KV$KV_INDEX oynuyor..."
 
   ffmpeg -re \
-  -stream_loop -1 -i rj1.mp4 \
-  -stream_loop -1 -i reklam.mp4 \
-  -stream_loop -1 -i rj2.mp4 \
-  -stream_loop -1 -i jenerik.mp4 \
-  -stream_loop -1 -i akilli.mp4 \
-  -stream_loop -1 -i kv${KV_INDEX}.mp4 \
+  -i rj1.mp4 \
+  -i reklam.mp4 \
+  -i rj2.mp4 \
+  -i jenerik.mp4 \
+  -i akilli.mp4 \
+  -i kv${KV_INDEX}.mp4 \
   -i yayin_logo.png \
   -i reklam_logo.png \
   -filter_complex "
@@ -38,12 +38,11 @@ do
   [v4][logo_main]overlay=0:0[o4];
   [v5][logo_main]overlay=0:0[o5];
 
-  [o0][0:a?][o1][1:a?][o2][2:a?][o3][3:a?][o4][4:a?][o5][5:a?]
-  concat=n=6:v=1:a=1[v][a]
+  [o0][o1][o2][o3][o4][o5]
+  concat=n=6:v=1:a=0[v]
   " \
-  -map "[v]" -map "[a]" \
+  -map "[v]" \
   -c:v libx264 -preset ultrafast -crf 28 \
-  -c:a aac -b:a 96k \
   -f hls \
   -hls_time 6 \
   -hls_list_size 10 \
