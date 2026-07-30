@@ -4,7 +4,6 @@ mkdir -p hls
 
 KV_INDEX=1
 
-# HTTP server başlat (PUBLIC erişim)
 python3 -m http.server 10000 &
 
 while true
@@ -38,6 +37,7 @@ do
   concat=n=6:v=1:a=1[v][a]
   " \
   -map "[v]" -map "[a]" \
+  -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" \
   -c:v libx264 -preset veryfast -crf 23 \
   -c:a aac -b:a 128k \
   -f hls \
