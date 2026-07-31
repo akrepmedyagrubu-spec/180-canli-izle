@@ -8,4 +8,10 @@ reklam.mp4 filter=lfs diff=lfs merge=lfs -text
 jenerik.mp4 filter=lfs diff=lfs merge=lfs -text
 yayin_logo.png filter=lfs diff=lfs merge=lfs -text
 reklam_logo.png filter=lfs diff=lfs merge=lfs -text
+recep.mp4 filter=lfs diff=lfs merge=lfs -text
+sinejenerik.mp4 filter=lfs diff=lfs merge=lfs -text
+kv4.mp4 filter=lfs diff=lfs merge=lfs -text
+panasonicsunar.mp4 filter=lfs diff=lfs merge=lfs -text
+panasonicsundu.mp4 filter=lfs diff=lfs merge=lfs -text
+playlist.txt filter=lfs diff=lfs merge=lfs -text
 *.mp4 filter=lfs diff=lfs merge=lfs -text
