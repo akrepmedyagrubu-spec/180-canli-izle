@@ -1,24 +1,24 @@
 #!/bin/bash
 
-echo "=== BAŞLATILIYOR ==="
+echo "=== BAŞLAT ==="
 
 cd /app || exit
 
-echo "=== DOSYALAR (BAŞLANGIÇ) ==="
+echo "=== BAŞLANGIÇ DOSYALAR ==="
 ls -lh
 
-echo "=== LFS INIT ==="
+echo "=== GIT LFS INIT ==="
 git lfs install
 
-echo "=== LFS PULL ==="
+echo "=== GIT LFS PULL ==="
 git lfs pull
 
-echo "=== DOSYALAR (SONRA) ==="
+echo "=== LFS SONRASI DOSYALAR ==="
 ls -lh
 
 mkdir -p hls
 
-echo "=== HTTP SERVER BAŞLATILIYOR ==="
+echo "=== HTTP SERVER ==="
 python3 -m http.server 10000 &
 
 echo "=== YAYIN BAŞLADI ==="
@@ -27,10 +27,9 @@ while true
 do
   while IFS= read -r FILE
   do
-    echo "Oynatılıyor: $FILE"
-
-    # boş satır skip
     [ -z "$FILE" ] && continue
+
+    echo "Oynatılıyor: $FILE"
 
     if [ ! -f "$FILE" ]; then
       echo "❌ YOK: $FILE"
