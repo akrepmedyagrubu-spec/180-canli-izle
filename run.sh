@@ -1,5 +1,11 @@
 #!/bin/bash
 
+echo "LFS çekiliyor..."
+git lfs pull
+
+echo "Dosyalar:"
+ls -lh
+
 mkdir -p hls
 
 python3 -m http.server 10000 &
@@ -11,6 +17,11 @@ do
   while read FILE
   do
     echo "Oynatılıyor: $FILE"
+
+    if [ ! -f "$FILE" ]; then
+      echo "HATA: $FILE bulunamadı!"
+      continue
+    fi
 
     BASENAME=$(basename "$FILE")
 
