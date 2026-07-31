@@ -1,9 +1,15 @@
 #!/bin/bash
 
+echo "Dizin ayarlanıyor..."
+cd /app
+
+echo "Dosyalar:"
+ls -lh
+
 echo "LFS çekiliyor..."
 git lfs pull
 
-echo "Dosyalar:"
+echo "Tekrar liste:"
 ls -lh
 
 mkdir -p hls
@@ -23,18 +29,7 @@ do
       continue
     fi
 
-    BASENAME=$(basename "$FILE")
-
-    # LOGO SEÇİMİ
-    if [[ "$BASENAME" == "reklam.mp4" ]]; then
-      LOGO="reklam_logo.png"
-    else
-      LOGO="yayin_logo.png"
-    fi
-
-    echo "Logo: $LOGO"
-
-    ffmpeg -re -i "$FILE" -i "$LOGO" \
+    ffmpeg -re -i "$FILE" -i "yayin_logo.png" \
     -filter_complex "[0:v]scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,fps=25[v];[1:v]scale=1280:720[l];[v][l]overlay=0:0" \
     -map 0:a? \
     -c:v libx264 -preset ultrafast -crf 28 \
@@ -46,5 +41,4 @@ do
     hls/stream.m3u8
 
   done < playlist.txt
-
 done
