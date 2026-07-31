@@ -1,31 +1,39 @@
 #!/bin/bash
 
-echo "Dizin ayarlanıyor..."
-cd /app
+echo "=== BAŞLATILIYOR ==="
 
-echo "Dosyalar:"
+cd /app || exit
+
+echo "=== DOSYALAR (BAŞLANGIÇ) ==="
 ls -lh
 
-echo "LFS çekiliyor..."
+echo "=== LFS INIT ==="
+git lfs install
+
+echo "=== LFS PULL ==="
 git lfs pull
 
-echo "Tekrar liste:"
+echo "=== DOSYALAR (SONRA) ==="
 ls -lh
 
 mkdir -p hls
 
+echo "=== HTTP SERVER BAŞLATILIYOR ==="
 python3 -m http.server 10000 &
 
-echo "Yayın başladı..."
+echo "=== YAYIN BAŞLADI ==="
 
 while true
 do
-  while read FILE
+  while IFS= read -r FILE
   do
     echo "Oynatılıyor: $FILE"
 
+    # boş satır skip
+    [ -z "$FILE" ] && continue
+
     if [ ! -f "$FILE" ]; then
-      echo "HATA: $FILE bulunamadı!"
+      echo "❌ YOK: $FILE"
       continue
     fi
 
