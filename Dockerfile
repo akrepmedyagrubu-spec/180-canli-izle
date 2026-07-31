@@ -6,9 +6,6 @@ WORKDIR /app
 
 COPY . .
 
-# 🔥 EN KRİTİK SATIR
-RUN git lfs install && git lfs pull
-
 RUN chmod +x run.sh
 
 CMD ["./run.sh"]
