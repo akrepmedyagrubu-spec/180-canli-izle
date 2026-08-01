@@ -12,7 +12,8 @@ while true
 do
 
 ffmpeg -re -fflags +genpts -f concat -safe 0 -i liste.txt -i yayin_logo.png \
--filter_complex "[0:v]fps=25,scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2[v];[1:v]scale=1280:720[l];[v][l]overlay=0:0" \
+-filter_complex "[0:v]fps=25,scale=1280:720:force_original_aspect_ratio=decrease,\
+pad=1280:720:(ow-iw)/2:(oh-ih)/2[v];[1:v]scale=1280:720[l];[v][l]overlay=0:0" \
 -map 0:a? \
 -vsync 1 \
 -c:v libx264 -preset ultrafast -tune zerolatency -crf 28 \
