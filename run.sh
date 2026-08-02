@@ -21,13 +21,10 @@ ffmpeg -re \
 -i kv1.mp4 \
 -i panasonicsundu.mp4 \
 -i yayin_logo.png \
--filter_complex "
-[0:v][0:a][1:v][1:a][2:v][2:a][3:v][3:a][4:v][4:a][5:v][5:a][6:v][6:a][7:v][7:a]concat=n=8:v=1:a[v][a];
-[v][8:v]overlay=0:0[outv]
-" \
+-filter_complex "[0:v][0:a][1:v][1:a][2:v][2:a][3:v][3:a][4:v][4:a][5:v][5:a][6:v][6:a][7:v][7:a]concat=n=8:v=1:a=1[v][a];[8:v]scale=1280:720[logo];[v][logo]overlay=0:0[outv]" \
 -map "[outv]" -map "[a]" \
 -c:v libx264 -preset ultrafast -crf 28 \
--vf "scale=1280:720,fps=25" \
+-vf "fps=25" \
 -c:a aac -b:a 128k -ar 44100 -ac 2 \
 -f hls \
 -hls_time 4 \
