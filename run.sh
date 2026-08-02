@@ -2,9 +2,12 @@
 
 cd /app || exit
 
+echo "DOSYALAR:"
+ls -lh
+
 mkdir -p hls
 
-# server
+# web server
 python3 -m http.server 10000 &
 
 echo "YAYIN BASLADI"
