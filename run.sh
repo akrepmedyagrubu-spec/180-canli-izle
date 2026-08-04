@@ -4,7 +4,7 @@ cd /app || exit
 
 mkdir -p hls
 
-# eski ffmpeg kalmışsa öldür
+# eski ffmpeg varsa öldür
 pkill -9 ffmpeg 2>/dev/null
 
 # web server
@@ -27,20 +27,20 @@ do
       LOGO="yayin_logo.png"
     fi
 
-    ffmpeg -re -i "$FILE" -i "$LOGO" \
-    -filter_complex "[0:v]scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,fps=25,format=yuv420p[v];[1:v]scale=1280:720[l];[v][l]overlay=0:0[outv]" \
+    ffmpeg -y -re -i "$FILE" -i "$LOGO" \
+    -filter_complex "[0:v]scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,fps=25,format=yuv420p[v0];[1:v]scale=1280:720[v1];[v0][v1]overlay=0:0[outv]" \
     -map "[outv]" -map 0:a? \
-    -c:v libx264 -preset ultrafast -crf 28 \
+    -c:v libx264 -preset veryfast -crf 28 \
     -c:a aac -b:a 96k -ar 44100 -ac 2 \
     -f hls \
     -hls_time 4 \
-    -hls_list_size 6 \
-    -hls_flags delete_segments+append_list \
+    -hls_list_size 20 \
+    -hls_flags delete_segments+append_list+omit_endlist \
+    -hls_segment_filename hls/segment_%03d.ts \
     hls/stream.m3u8
 
   done
 
-  # KV sıradaki bölüm
   ((KV_INDEX++))
 
   if [ ! -f "kv${KV_INDEX}.mp4" ]; then
