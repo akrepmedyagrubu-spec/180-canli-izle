@@ -28,13 +28,13 @@ do
     fi
 
     ffmpeg -y -re -i "$FILE" -i "$LOGO" \
-    -filter_complex "[0:v]scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,fps=25,format=yuv420p[v0];[1:v]scale=1280:720[v1];[v0][v1]overlay=0:0[outv]" \
+    -filter_complex "[0:v]scale=640:360:force_original_aspect_ratio=decrease,pad=640:360:(ow-iw)/2:(oh-ih)/2,fps=15,format=yuv420p[v0];[1:v]scale=640:360[v1];[v0][v1]overlay=0:0[outv]" \
     -map "[outv]" -map 0:a? \
-    -c:v libx264 -preset veryfast -crf 28 \
-    -c:a aac -b:a 96k -ar 44100 -ac 2 \
+    -c:v libx264 -preset ultrafast -tune zerolatency -crf 32 \
+    -c:a aac -b:a 64k -ar 44100 -ac 2 \
     -f hls \
-    -hls_time 4 \
-    -hls_list_size 20 \
+    -hls_time 3 \
+    -hls_list_size 30 \
     -hls_flags delete_segments+append_list+omit_endlist \
     -hls_segment_filename hls/segment_%03d.ts \
     hls/stream.m3u8
