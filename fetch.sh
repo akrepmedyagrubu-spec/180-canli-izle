@@ -2,13 +2,20 @@
 
 TOKEN="8854368089:AAGuSqO3TaPNTo1Ya6ojSf4YlNGQ71oiXM0"
 
-FILE_ID=$1
+mkdir -p videos
 
-FILE_PATH=$(curl -s "https://api.telegram.org/bot$TOKEN/getFile?file_id=$FILE_ID" \
-| grep -o '"file_path":"[^"]*' | cut -d'"' -f4)
+cat db.json | jq -c '.[]' | while read item
+do
+  FILE_ID=$(echo $item | jq -r '.file_id')
+  CAPTION=$(echo $item | jq -r '.caption')
 
-URL="https://api.telegram.org/file/bot$TOKEN/$FILE_PATH"
+  FILE_PATH=$(curl -s "https://api.telegram.org/bot$TOKEN/getFile?file_id=$FILE_ID" \
+  | grep -o '"file_path":"[^"]*' | cut -d'"' -f4)
 
-echo $URL
+  URL="https://api.telegram.org/file/bot$TOKEN/$FILE_PATH"
 
-wget -O videos/video.mp4 "$URL"
+  NAME="videos/${FILE_ID}.mp4"
+
+  echo "indiriliyor: $NAME"
+  wget -q -O "$NAME" "$URL"
+done
