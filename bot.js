@@ -1,14 +1,36 @@
-import TelegramBot from 'node-telegram-bot-api';
+import fs from "fs";
+import TelegramBot from "node-telegram-bot-api";
 
 const TOKEN = "8854368089:AAGuSqO3TaPNTo1Ya6ojSf4YlNGQ71oiXM0";
+const CHANNEL = "@viodeu";
+
 const bot = new TelegramBot(TOKEN, { polling: true });
 
-console.log("BOT AKTİF");
+const DB = "db.json";
 
-bot.on('channel_post', (msg) => {
+function load() {
+  if (!fs.existsSync(DB)) return [];
+  return JSON.parse(fs.readFileSync(DB));
+}
+
+function save(data) {
+  fs.writeFileSync(DB, JSON.stringify(data, null, 2));
+}
+
+// YENİ MESAJLAR
+bot.on("channel_post", (msg) => {
   if (!msg.video) return;
 
-  const fileId = msg.video.file_id;
+  const list = load();
 
-  console.log("FILE_ID:", fileId);
+  list.push({
+    file_id: msg.video.file_id,
+    caption: msg.caption || ""
+  });
+
+  save(list);
+
+  console.log("NEW VIDEO SAVED:", msg.video.file_id);
 });
+
+console.log("BOT AKTIF");
