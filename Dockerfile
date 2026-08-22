@@ -1,11 +1,11 @@
-FROM ubuntu:22.04
+FROM node:20-slim
 
-RUN apt update && apt install -y ffmpeg python3
+RUN apt update && apt install -y ffmpeg curl wget jq python3
 
 WORKDIR /app
 
 COPY . .
 
-RUN chmod +x run.sh
+RUN npm install
 
-CMD ["./run.sh"]
+CMD ["bash", "startup.sh"]
